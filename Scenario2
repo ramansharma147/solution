@@ -1,0 +1,126 @@
+There are many metrics that needs to be monitored considering the provided situation. I am writing down all the possible metrics that needs to be monitored along
+with the steps how can acheive that:
+
+1. Request Counts
+
+Whether, as a total sum of all the requests coming in across all load balancers or on a per-minute basis, monitoring request counts can help your organization 
+understand more than you think. Total requests can be correlated with the number or type of users your services support within a normal range, but they can also
+signal issues with routing or network connections further along with the network if the total requests fall outside certain bounds. Requests per minute by load
+balancer, on the other hand, can provide a view into how well the load is being balanced across the system. 
+
+so let's say I uses Nginx as Proxy and I can also use Nginx Plus to get the additional information of some of the important metrics. So with the help of Nginx
+Plus 
+we can monitor the requests per seconds. Monitoring this metric can alert you to spikes in incoming web traffic, whether legitimate or nefarious, or sudden drops, 
+which are usually indicative of problems. A drastic change in requests per second can alert you to problems brewing somewhere in your environment, even if it 
+cannot tell you exactly where those problems lie.
+
+
+2. Dropped Connections
+
+The number of connections that have been dropped is equal to the difference between accepts and handled (NGINX) or is exposed directly as a standard metric. 
+Under normal circumstances, dropped connections should be zero. If the rate of dropped connections per unit time starts to rise, we need to look for possible 
+resource saturation. This can also be monitored via Nginx Plus.
+
+
+3. Server Error Rate
+
+Your server error rate is equal to the number of 5xx errors, such as “502 Bad Gateway”, divided by the total number of status codes (1xx, 2xx, 3xx, 4xx, 5xx), 
+per unit of time (often one to five minutes). If your error rate starts to climb over time, investigation may be in order. If it spikes suddenly, urgent action 
+may be required, as clients are likely to report errors to the end user. Although open source NGINX does not make error rates immediately available for monitoring, 
+there are at least two ways to capture that information:
+
+  A. Use the expanded status module available with commercially supported NGINX Plus.
+  B. Configure NGINX’s log module to write response codes in access log.
+
+
+4. Request Processing Time
+
+The request time metric logged by Nginx records the processing time for each request, from the reading of the first client bytes to fulfilling the request. Long 
+response times can point to problems upstream. Nginx and Nginx Plus users can capture data on processing time by adding the $request_time variable to the access
+log format. 
+
+
+5. CPU load (SSL-Offloading is CPU sensitive process)
+
+SSL/TLS processing is very CPU intensive, and is becoming more intensive as key sizes increase. So we need to monitor the CPU usage for the average basis or for 
+any kind of cpu spike, if appeared any. This should be measured as utilization across all cores, if using a multi-core machine. We can use many tools for 
+monitoring the CPU utilisation like Signalfx. 
+
+
+6. Increase in file descriptor
+
+Slower responses and higher wait time will cause high FD's on server. So this also needs to be monitored. This can be monitored with many tools like Signalfx or
+Nagios.
+
+
+7. SSL Certificate Expiry on Proxy Server.
+
+Certificate renewal is something that can fall between the cracks of different organizations and when a cert does expire it will result in security error, and 
+not being accepted or trusted by browsers or other applications. Certificate management is always a challenge and in this environment. monitoring the load 
+balancer allows the detection of certificates that are soon to expire enabling proactive action before any should affect the customers application experience. 
+So e can use some third party tools like CertsMonitor to monitor the validity of the certs and it will send the notifications via email or via slack before the 
+certs get expired.
+
+
+8. TCP Open Connections.
+
+We should also monitor the TCP open connections and we can monitor it via Signalfx or via Nagios tools.
+
+
+9. Memory usage
+
+We should also monitor the usage of memory utilistion to see if any 'Out of Memory' issues detected for the server and take appropriate actions to fix it. We can
+monitor it via the Signalfx or Nagios like tools. 
+
+10. Disk utilisation
+
+We should also monitor the Disk utilisation so that it doesn't reach more than 90 or 95% utilisation and it should alert if it reaches 90 or 95% or whatever the 
+limit we have set for it. We can monitor it via Nagios or via Signalfx.
+
+
+CHALLENGES WHILE MONITORING THIS SETUP
+
+When troubleshooting with these metrics, it’s important to understand which components are being impacted. Ultimately, when our sytem isn’t performing as 
+expected, our clients are impacted. The various  metrics discussed above will help us to determine where to look first.
+
+For example, how do you know if you have enough services running to handle the incoming load (rejected connections)? Did your last deployment introduce a bug 
+(5xx status codes or target host health)? How many clients does your application have (connection count)?
+
+Slow Response Time
+How do you know if your service is taking too long to process a request? Does your service have an SLA for response time? Do you have enough services running to 
+adequately handle your client load? The first metric to look at for response time is Latency. There are many different reasons for higher-than-expected 
+latency:
+
+Check your service – What’s the CPU utilization of your service? Is there enough memory for the service? Is it running out of threads? Is our service waiting 
+on a shared resource? 
+
+Resource contention – If our application uses a shared resource like a database, check the database’s metrics. Is the shared service under high CPU load? Is it 
+taking longer than normal to process requests?
+
+Service Errors
+
+When troubleshooting a 5xx error, a good starting point is our application’s log files. Centralized logging makes it easier and faster to track down where the
+error originated. We can use the tools like SumoLogic to check the logs and it will make the life easy.
+
+Service Health
+Troubleshooting an unexpected increase in the “unhealthy host count” metric can be difficult to track down. The first place to start is with our health check.
+Do we have a deep health check, one that takes a long time to complete? This can happen when the health check includes too many additional services as part of its 
+health assessment. If our code itself isn’t the issue, check the server's health check configuration as we many need to adjust timeout settings.
+
+Too Many Connections
+What happens when the demand for our service exceeds our configured capacity? The cloud enables us to scale infinitely but ous system design needs to support 
+this scalability. How can we stay ahead of the demand? Connection count, latency, and rejected connections give us insight into the growth of our clients and 
+how our application is meeting the load.
+
+As our connection count rises, we need to watch our latency metric.
+
+A spike in rejection count could point to a capacity issue, our targets are too busy for the load. A first step to alleviating a high rejected connection count 
+is to increase the number of target services for the load balancer. Since adding another instance may exacerbate the problem, be prepared to decrease our instance 
+count if needed.
+
+App Performance
+The load balancer might be a good place to monitor all your services, but often we need to drill down to the application level to find the cause of latency and 
+errors. Some of the applications offers built-in application performance monitoring (APM) that lets us see the response time from our application, and even trace
+transactions distributed across our stack.
+
+
