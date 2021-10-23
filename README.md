@@ -1,4 +1,4 @@
-# This file includes the information related to "Scenario 1" and "Scenario 2". 
+# This repo includes the information related to "Scenario 1" and "Scenario 2". 
 
 #Scenario 1
 
