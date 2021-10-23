@@ -9,4 +9,4 @@ i.e Write a simple CLI application that prints the numbers from 1 to 10 in rando
 
 #Scenario 2
 
-#I have written downmy findigs under 'Scenario2' file. 
+#I have written down my findings under 'Scenario2' file. 
