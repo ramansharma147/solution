@@ -3,8 +3,7 @@ with the steps how can acheive that:
 
 1. Request Counts
 
-Whether, as a total sum of all the requests coming in across all load balancers or on a per-minute basis, monitoring request counts can help your organization 
-understand more than you think. Total requests can be correlated with the number or type of users your services support within a normal range, but they can also
+Whether, as a total sum of all the requests coming in across all load balancers or on a per-minute basis, monitoring request counts can the organization in many ways. Total requests can be correlated with the number or type of users your services support within a normal range, but they can also
 signal issues with routing or network connections further along with the network if the total requests fall outside certain bounds. Requests per minute by load
 balancer, on the other hand, can provide a view into how well the load is being balanced across the system. 
 
